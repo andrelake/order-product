@@ -1,22 +1,37 @@
 package com.andrelake.orderproduct.resources;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.andrelake.orderproduct.entities.User;
+import com.andrelake.orderproduct.services.UserService;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
 
+	@Autowired
+	private UserService service;
+	
 	//endpoint para acessar os usuários
 	@GetMapping
-	public ResponseEntity<User> findAll() {
+	public ResponseEntity<List<User>> findAll() {
 		
-		User user = new User(3L, "Maria", "maria@gmail.com", "14999999999", "1234");
+		List<User> list = service.findAll(); 
 		
-		return ResponseEntity.ok().body(user);
+		return ResponseEntity.ok().body(list);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<User> findById(@PathVariable Long id) {
+		User obj = service.findById(id);
+		return ResponseEntity.ok().body(obj);
+		
 	}
 }
