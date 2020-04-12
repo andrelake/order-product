@@ -5,10 +5,13 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.andrelake.orderproduct.entities.User;
 import com.andrelake.orderproduct.repositories.UserRepository;
+import com.andrelake.orderproduct.services.exceptions.UserInUseException;
 import com.andrelake.orderproduct.services.exceptions.UserNotFoundException;
 
 @Service
@@ -33,7 +36,15 @@ public class UserService {
 	}
 	
 	public void delete(Long id) {
-		repository.deleteById(id);
+		try {
+			repository.deleteById(id);
+		}
+		catch(EmptyResultDataAccessException e) {
+			throw new UserNotFoundException(id);
+		}
+		catch(DataIntegrityViolationException e) {
+			throw new UserInUseException(id);
+		}
 	}
 	
 	public User update(Long id, User user) {
