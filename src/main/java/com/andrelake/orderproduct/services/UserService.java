@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.andrelake.orderproduct.entities.User;
 import com.andrelake.orderproduct.repositories.UserRepository;
+import com.andrelake.orderproduct.services.exceptions.UserNotFoundException;
 
 @Service
 public class UserService {
@@ -23,6 +24,8 @@ public class UserService {
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
 		return obj.get();
+//		User user = findOrFail(id);
+//		return user;
 	}
 	
 	public User insert(User user) {
@@ -42,5 +45,13 @@ public class UserService {
 	private void updateDate(User oldUser, User user) {
 		BeanUtils.copyProperties(user, oldUser, "id", "password");
 		
+	}
+	
+	public User findOrFail(Long id) {
+		
+		User user = repository.findById(id)
+				.orElseThrow(() -> new UserNotFoundException(id));
+		
+		return user;
 	}
 }
