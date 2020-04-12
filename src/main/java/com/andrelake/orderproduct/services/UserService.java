@@ -48,7 +48,7 @@ public class UserService {
 	}
 	
 	public User update(Long id, User user) {
-		User oldUser = repository.getOne(id);
+		User oldUser = findOrFail(id);
 		updateDate(oldUser, user);
 		return repository.save(oldUser);
 	}
